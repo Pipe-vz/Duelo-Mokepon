@@ -43,7 +43,6 @@ body {
     align-items: center;
 }
 
-
 .tarjeta-de-mokepon img {
     width: 80px;
 }
@@ -61,6 +60,10 @@ body {
 
 input {
     display: none;
+}
+
+input:checked + label { /*le agrego la operacion del boton de seleccion a la operacion hermana qu es input*/
+    background-color: #5D8BF4;
 }
 
 #seleccionar-ataque {
