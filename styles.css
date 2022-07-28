@@ -23,7 +23,7 @@ body {
     font-size: 24px;
 }
 
-.tarjetas {
+.tarjetas, .tarjetasAtaques {
     display: flex;
     gap: 10px;
 }
@@ -103,4 +103,35 @@ input {
     color: #11468f;
     font-family: 'Poppins', sans-serif;
 
+}
+
+.ataques {
+    display: grid;
+    grid-template-columns: 100px 100px;
+    text-align: center;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+}
+#vidas-jugador, #vidas-enemigo{
+    font-size: 32px;
+    margin-bottom: 0;
+}
+
+.ataquesJugador, .ataquesEnemigo{
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+
+@media (max-width: 360px) {
+
+    /*diseño responsivo para diferentes tamaños de pantalla (tamañomaximo de pantalla donde pasa esto*/
+    .tarjetas {
+        flex-direction: column;
+    }
+
+    .tarjetasAtaques {
+        flex-direction: column;
+    }
 }

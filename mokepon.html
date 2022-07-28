@@ -44,7 +44,7 @@
         </div>
 
         <button id="boton-mascota">seleccionar</button>
-        
+
     </section>
 
 
@@ -53,7 +53,7 @@
 
         <h2 class="subtitulo">elige tu ataque:</h2>
 
-        <div>
+        <div class="tarjetasAtaques">
             <button id="boton-fuego" class="boton-de-ataque">Fuego 🔥</button>
             <button id="boton-agua" class="boton-de-ataque">Agua 💧</button>
             <button id="boton-tierra" class="boton-de-ataque">Tierra 🌱</button>
@@ -66,11 +66,19 @@
             </section>
         </div>
 
-        <div id="ataquesDelJugador"></div>
-        <div id="ataquesDelEnemigo"></div>
-
-        <p>Tu mascota <span id="mascota-jugador"></span> tiene <span id="vidas-jugador">3</span> vidas</p>
-        <p>La mascota <span id="mascota-enemigo"></span> del enemigo tiene <span id="vidas-enemigo">3</span> vidas</p>
+        <div class="ataques">
+            <div class="ataquesJugador">
+                <p id="vidas-jugador">3</p>
+                <p id="mascota-jugador"></p>
+                <div id="ataquesDelJugador"></div>
+            </div>
+            <div class="ataquesEnemigo">
+                <p id="vidas-enemigo">3</p>
+                <p id="mascota-enemigo"></p>
+                <div id="ataquesDelEnemigo"></div>
+            </div>
+            </p>
+        </div>
     </section>
 
 </body>

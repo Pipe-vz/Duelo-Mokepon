@@ -157,7 +157,7 @@ function ataqueTierra() {
 }
 function revisarVida() {
     if (vidasJugador == 0) {
-        crearMensajeFinal(`lo Fsiento, Perdiste`)
+        crearMensajeFinal(`lo siento, Perdiste`)
     } else if (vidasEnemigo == 0) {
         crearMensajeFinal(`Felicitaciones, GANASTEEEE`)
     }
