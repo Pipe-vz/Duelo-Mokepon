@@ -110,19 +110,27 @@ function combate() {
     revisarVida()
 }
 function crearMensaje(resultado) {
-    let sectionMensajes = document.getElementById("mensajes")
-    let parrafo = document.createElement('p')
+    let sectionMensajes = document.getElementById("resultado")
+    let ataquesDelJugador = document.getElementById("ataquesDelJugador")
+    let ataquesDelEnemigo = document.getElementById("ataquesDelEnemigo")
 
-    parrafo.innerHTML = `Tu mascota ataco con ${ataqueJugador}, la mascota del enemigo ataco con ${ataqueEnemigo} - ${resultado}`
+    let nuevoAtaqueDelJugador = document.createElement('p')
+    let nuevoAtaqueDelEnemigo = document.createElement('p')
 
-    sectionMensajes.appendChild(parrafo)
+    sectionMensajes.innerHTML = resultado
+    nuevoAtaqueDelJugador.innerHTML = ataqueJugador
+    nuevoAtaqueDelEnemigo.innerHTML = ataqueEnemigo
+
+    //let parrafo = document.createElement('p')
+    //parrafo.innerHTML = `Tu mascota ataco con ${ataqueJugador}, la mascota del enemigo ataco con ${ataqueEnemigo} - ${resultado}`
+
+    ataquesDelJugador.appendChild(nuevoAtaqueDelJugador)
+    ataquesDelEnemigo.appendChild(nuevoAtaqueDelEnemigo)
 }
 function crearMensajeFinal(resultadoFinal) {
-    let sectionMensajes = document.getElementById("mensajes")
-    let parrafo = document.createElement('p')
+    let sectionMensajes = document.getElementById("resultado")
+    sectionMensajes.innerHTML = resultadoFinal
 
-    parrafo.innerHTML = `El resultado final es: ${resultadoFinal}`
-    sectionMensajes.appendChild(parrafo)
     let botonFuego = document.getElementById('boton-fuego')
     botonFuego.disabled = true
     let botonAgua = document.getElementById('boton-agua')
@@ -149,9 +157,10 @@ function ataqueTierra() {
 }
 function revisarVida() {
     if (vidasJugador == 0) {
-        crearMensajeFinal(`lo siento, Perdiste`)
-    } else if (vidasEnemigo == 0)
-        crearMensajeFinal`Felicitaciones, GANASTEEEE`
+        crearMensajeFinal(`lo Fsiento, Perdiste`)
+    } else if (vidasEnemigo == 0) {
+        crearMensajeFinal(`Felicitaciones, GANASTEEEE`)
+    }
 }
 
 window.addEventListener('load', iniciarJuego)   // Me dice que cargue el script cuando cargue toda la pagina 
