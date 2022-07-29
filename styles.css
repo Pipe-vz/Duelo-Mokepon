@@ -23,7 +23,8 @@ body {
     font-size: 24px;
 }
 
-.tarjetas, .tarjetasAtaques {
+.tarjetas,
+.tarjetasAtaques {
     display: flex;
     gap: 10px;
 }
@@ -62,7 +63,8 @@ input {
     display: none;
 }
 
-input:checked + label { /*le agrego la operacion del boton de seleccion a la operacion hermana qu es input*/
+input:checked+label {
+    /*le agrego la operacion del boton de seleccion a la operacion hermana qu es input*/
     background-color: #5D8BF4;
 }
 
@@ -115,15 +117,18 @@ input:checked + label { /*le agrego la operacion del boton de seleccion a la ope
     color: white;
     font-family: 'Poppins', sans-serif;
 }
-#vidas-jugador, #vidas-enemigo{
+
+#vidas-jugador,
+#vidas-enemigo {
     font-size: 32px;
     margin-bottom: 0;
 }
 
-.ataquesJugador, .ataquesEnemigo{
-display: flex;
-flex-direction: column;
-align-items: center;
+.ataquesJugador,
+.ataquesEnemigo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 
