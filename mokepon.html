@@ -23,6 +23,18 @@
 
     </section>
 
+    <section id="verMapa">
+
+        <h1 class="titulo">Recorre el mapa con tu Mokepon!</h1>
+        <canvas id="mapa"></canvas>
+        <!--creo un boton con una funcion integrada al hacer click, corre en el JS-->
+        <button onmouseup="detenerMovimiento()" onmousedown ="moverArr()">Arriba</button>
+        <button onmouseup="detenerMovimiento()" onmousedown ="moverAba()">Abajo</button>
+        <button onmouseup="detenerMovimiento()" onmousedown ="moverIzq()">Izquierda</button>
+        <button onmouseup="detenerMovimiento()" onmousedown ="moverDer()">Derecha</button>
+
+    </section>
+
 
     <section id="seleccionar-ataque">
         <h1 id="titulito" class="titulo">Mokepon</h1>

@@ -17,6 +17,10 @@ const ataquesDelEnemigo = document.getElementById("ataquesDelEnemigo")
 const contenedorTarjetas = document.getElementById("contenedorTarjetas")
 const contenedorAtaques = document.getElementById("contenedorAtaques")
 
+const sectionVerMapa = document.getElementById("verMapa")
+const mapa = document.getElementById('mapa')
+
+
 let mokepones = []
 let ataqueJugador = []
 let ataqueEnemigo = []
@@ -35,9 +39,8 @@ let indexAtaqueJugador = []
 let indexAtaqueenemigo = []
 let victoriasJugador = 0
 let victoriasEnemigo = 0
-
-let vidasJugador = 3
-let vidasEnemigo = 3
+let lienzo = mapa.getContext('2d')
+let intervalo
 
 //creamos la clase mokepon, la cual nos servirá como template para crear cada uno de los objetos mokepon.
 class Mokepon {
@@ -46,6 +49,14 @@ class Mokepon {
         this.foto = foto
         this.vida = vida
         this.ataques = []
+        this.x = 20
+        this.y = 30
+        this.ancho = 80
+        this.alto = 80
+        this.mapaFoto = new Image()
+        this.mapaFoto.src = foto
+        this.velocidadX = 0
+        this.velocidadY = 0
     }
 }
 
@@ -98,21 +109,23 @@ function iniciarJuego() {
 
     //oculto inicialmente la seccion de ataque para que aparezca solo despues de seleccionar el mokepon
     seccionAtaque.style.display = 'none'  //seccionAtaque.hidden = true   
+    sectionVerMapa.style.display = 'none'
     seccionReiniciar.style.display = 'none' //seccionReiniciar.hidden = true 
 
-    mokepones.forEach((mokepon) => {
+    mokepones.forEach((mokepon) => {    //por cada uno de los elementos en el arreglo mokepones, haga esto. 
         opcionDeMokepones = `<input type="radio" name="mascota" id=${mokepon.nombre} />
         <label class="tarjeta-de-mokepon" for=${mokepon.nombre}>
             <p>${mokepon.nombre}</p>
             <img src=${mokepon.foto} alt=${mokepon.nombre}>
         </label>`
+        // creo la tarjeta de cada mokepon con su boton de seleccion, nombre e imagen
 
-        contenedorTarjetas.innerHTML += opcionDeMokepones
-
-        inputHipodoge = document.getElementById('Hipodoge')
-        inputCapipepo = document.getElementById('Capipepo')
-        inputRatigueya = document.getElementById('Ratigueya')
-    }) //por cada uno de los elementos en el arreglo mokepones, haga esto. 
+        contenedorTarjetas.innerHTML += opcionDeMokepones //creo cada uno de las tarjetas y las imprimo una despues de la otra, de lo contrario solo me queda la última
+    })
+    inputHipodoge = document.getElementById('Hipodoge')
+    inputCapipepo = document.getElementById('Capipepo')
+    inputRatigueya = document.getElementById('Ratigueya')
+    //una vez creadas las tarjetas como elementos HTML, traigo el elemnto HTML de cada mokepon por el id
 }
 
 /*function aleatorio(min, max) {
@@ -123,8 +136,13 @@ const aleatorio = (min, max) => Math.floor(Math.random() * (max - min + 1) + min
 
 function seleccionarMascotaJugador() {
     //muestro la seccion ataque una vez presiono el boton seleccionar y a su vez oculto la seccion de mostrar mokepones
-    seccionAtaque.style.display = 'flex'  // seccionAtaque.hidden = false
     seccionMascota.style.display = 'none'
+
+    //seccionAtaque.style.display = 'flex'  // seccionAtaque.hidden = false
+
+    sectionVerMapa.style.display = 'flex'
+
+    iniciarMapa()
 
     if (inputHipodoge.checked) {//me verifica si Hipodogee esta seleccionado
         spanMascotaJugador.innerHTML = inputHipodoge.id // Le cambio el atributo del lugar donde esta identificado en HTML con el id por medio de innerHTML
@@ -168,7 +186,8 @@ function mostrarAtaques(atak) {
 
 function secuenciaAtaque() {
     botones.forEach((boton) => {
-        /*boton.addEventListener('click', (e) => {//para averiguar que informacion me trae el boton y poder saber a que direccion apunto el evento  
+        //para averiguar que informacion me trae el boton y poder saber a que direccion apunto el evento
+        /*boton.addEventListener('click', (e) => {
         console.log(e)
         })*/
         boton.addEventListener('click', (e) => {
@@ -176,14 +195,17 @@ function secuenciaAtaque() {
                 ataqueJugador.push('FUEGO')
                 console.log(ataqueJugador)
                 boton.style.background = '#112f58'
+                boton.disabled = true
             } else if (e.target.textContent === '💧') {
                 ataqueJugador.push('AGUA')
                 console.log(ataqueJugador)
                 boton.style.background = '#112f58'
+                boton.disabled = true
             } else {
                 ataqueJugador.push('TIERRA')
                 console.log(ataqueJugador)
                 boton.style.background = '#112f58'
+                boton.disabled = true
             }
             ataqueAleatorio()
         })
@@ -247,18 +269,6 @@ function combate() {
             spanVidasEnemigo.innerHTML = victoriasEnemigo
         }
     }
-
-    /*if (ataqueJugador == 'FUEGO' && ataqueEnemigo == 'TIERRA' || ataqueJugador == 'AGUA' && ataqueEnemigo == 'FUEGO' || ataqueJugador == 'TIERRA' && ataqueEnemigo == 'AGUA') {
-        crearMensaje('GANASTEEE🥳')
-        vidasEnemigo--
-        inputVidasEnemigo.innerHTML = vidasEnemigo
-    } else if (ataqueJugador == ataqueEnemigo) {
-        crearMensaje('EMPATEE ⚔')
-    } else {
-        crearMensaje('PERDISTE 🤣')
-        vidasJugador--
-        inputVidasJugador.innerHTML = vidasJugador
-    }*/
     revisarVida()
 }
 function crearMensaje(resultado) {
@@ -278,10 +288,6 @@ function crearMensaje(resultado) {
 }
 function crearMensajeFinal(resultadoFinal) {
     sectionMensajes.innerHTML = resultadoFinal
-
-    botonFuego.disabled = true
-    botonAgua.disabled = true
-    botonTierra.disabled = true
     seccionReiniciar.style.display = 'block'  //seccionReiniciar.hidden = false
 
 }
@@ -308,6 +314,76 @@ function revisarVida() {
     } else {
         crearMensajeFinal(`Lo siento, Perdiste 🤕`)
     }
+}
+
+function pintarPersonaje() {
+    capipepo.x += capipepo.velocidadX
+    capipepo.y += capipepo.velocidadY
+
+    lienzo.clearRect(0, 0, mapa.width, mapa.height)
+    //funcion de insertar imagen en unas cordenadas con unas dimensiones.
+    lienzo.drawImage(
+        capipepo.mapaFoto,
+        capipepo.x,
+        capipepo.y,
+        capipepo.ancho,
+        capipepo.alto
+    )
+    //lienzo.fillrect(5,15,20,40) // pruebo que pueda dibijar en el canvas credo un rectangulo.
+    //et imagenCapipepo = new Image() // por medio de la clase Image creamos una mueva imgen
+    //imagenCapipepo.src = capipepo.foto //ponemos la ruta de la ubicacion de capipepo
+}
+
+function moverDer() {
+    capipepo.velocidadX = 5
+    //capipepo.x += 5
+    // pintarPersonaje()
+}
+function moverIzq() {
+    capipepo.velocidadX = -5
+    //  capipepo.x -= 5
+    // pintarPersonaje()
+
+} function moverAba() {
+    capipepo.velocidadY = 5
+    //   capipepo.y += 5
+    // pintarPersonaje()
+
+} function moverArr() {
+    capipepo.velocidadY = -5
+    //  capipepo.y -= 5
+    // pintarPersonaje()
+}
+
+function detenerMovimiento() {
+    capipepo.velocidadX = 0
+    capipepo.velocidadY = 0
+}
+
+function presionoTecla(event) {
+    switch (event.key) {
+        case 'ArrowUp':
+            moverArr()
+            break
+        case 'ArrowDown':
+            moverAba()
+            break
+        case 'ArrowLeft':
+            moverIzq()
+            break
+        case 'ArrowRight':
+            moverDer()
+            break
+        default:
+            break
+    }
+}
+
+function iniciarMapa(){
+
+intervalo = setInterval(pintarPersonaje, 50) // ejecuto una fncion cada 50ms
+window.addEventListener('keydown', presionoTecla)
+window.addEventListener('keyup', detenerMovimiento)
 }
 
 window.addEventListener('load', iniciarJuego)   // Me dice que cargue el script cuando cargue toda la pagina 
