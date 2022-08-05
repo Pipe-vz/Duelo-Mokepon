@@ -137,11 +137,18 @@ input:checked+label {
     justify-content: center;
 }
 
-#mapa{
-    border: 2px solid #5C7AEA;
+#verMapa button{
+    width: 80px;
+    height: 40px;
+    border-radius: 20px;
+    background: transparent;
+    border: 1px solid;
+    color: white;
+    font-family: 'Poppins', sans-serif;
+    margin: 10px 0;
 }
 
-@media (max-width: 360px) {
+@media (max-width: 560px) {
 
     /*diseño responsivo para diferentes tamaños de pantalla (tamañomaximo de pantalla donde pasa esto*/
     .tarjetas {
@@ -151,4 +158,11 @@ input:checked+label {
     .tarjetasAtaques {
         flex-direction: column;
     }
+}
+@media (max-width: 300px) {
+#verMapa div{
+    display: flex;
+    align-items: center;    
+    flex-direction: column;
+}
 }
