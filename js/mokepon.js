@@ -21,7 +21,7 @@ const aleatorio = (min, max) => Math.floor(Math.random() * (max - min + 1) + min
 const sectionVerMapa = document.getElementById("verMapa")
 const mapa = document.getElementById('mapa')
 
-
+let jugadorId = null
 let mokepones = []
 let ataqueJugador = []
 let ataqueEnemigo = []
@@ -57,7 +57,7 @@ mapa.height = alturaBuscada
 
 //creamos la clase mokepon, la cual nos servirá como template para crear cada uno de los objetos mokepon.
 class Mokepon {
-    constructor(nombre, foto, vida, fotoMapa) {   //con constructor, creamos las propiedades que tendra cada mokeopon por defecto
+    constructor(nombre, foto, vida, fotoMapa) {   //con constructor, creamos las propiedades que tendra cada mokepon por defecto
         this.nombre = nombre
         this.foto = foto
         this.vida = vida
@@ -66,8 +66,8 @@ class Mokepon {
         this.y = 10
         this.ancho = 30
         this.alto = 30
-        this.xEnemigo = aleatorio(0, mapa.width - this.ancho)
-        this.yEnemigo = aleatorio(0, mapa.height - this.alto)
+        this.xEnemigo = aleatorio(this.x+this.ancho, mapa.width - this.ancho)
+        this.yEnemigo = aleatorio(this.y+this.ancho, mapa.height - this.alto)
         this.mapaFoto = new Image()
         this.mapaFoto.src = fotoMapa
         this.velocidadX = 0
@@ -80,7 +80,7 @@ class Mokepon {
             this.y = y,
             this.ancho,
             this.alto
-            )
+        )
     }
 }
 
@@ -130,6 +130,7 @@ function iniciarJuego() {
     */
     botonMascotaJugador.addEventListener('click', seleccionarMascotaJugador)
     botonReiniciar.addEventListener('click', reiniciarJuego)
+    unirseAlJuego()
 
     //oculto inicialmente la seccion de ataque para que aparezca solo despues de seleccionar el mokepon
     seccionAtaque.style.display = 'none'  //seccionAtaque.hidden = true   
@@ -150,6 +151,20 @@ function iniciarJuego() {
     inputCapipepo = document.getElementById('Capipepo')
     inputRatigueya = document.getElementById('Ratigueya')
     //una vez creadas las tarjetas como elementos HTML, traigo el elemnto HTML de cada mokepon por el id
+}
+
+function unirseAlJuego() {
+    fetch('http://localhost:8080/unirse') //llamada tipo get donde obtenemos una respuesta, peticion tipo get.
+        .then(function (res) { //callback qu se ejecutara uan vez se reciba respuesta del servior
+            // console.log(res)
+            if (res.ok) { //preguntaremos si todo salio bien
+                res.text()
+                    .then(function (respuesta) {
+                        console.log(respuesta)
+                        jugadorId = respuesta
+                    })
+            }
+        })
 }
 
 /*function aleatorio(min, max) {
@@ -175,10 +190,24 @@ function seleccionarMascotaJugador() {
     } else {
         console.log(`No has seleccionado nada!`)
     }
+    seleccionarMokepon(mascotaJugador)
     extraerAtaques(mascotaJugador) //agreo los ataques una vez seleccione Mokepon
     iniciarMapa()
 
 }
+
+function seleccionarMokepon(mascotaJugador) { // peticion tipo post
+    fetch(`http://localhost:8080/mokepon/${jugadorId}`, {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            mokepon: mascotaJugador
+        })
+    })
+}
+
 function extraerAtaques(mascotaJugador) {
     let ataques
     for (let i = 0; i < mokepones.length; i++) { //recorro la matriz de mokepones
@@ -350,11 +379,33 @@ function pintarCanvas() {
             revisarColision(mokepon)
         }
     })
-
     mascotaSeleccionada.pintarMokepon()
+    enviarPosicion(mascotaSeleccionada.x, mascotaSeleccionada.y)
+
     //lienzo.fillrect(5,15,20,40) // pruebo que pueda dibijar en el canvas credo un rectangulo.
     //et imagenCapipepo = new Image() // por medio de la clase Image creamos una mueva imgen
     //imagenCapipepo.src = capipepo.foto //ponemos la ruta de la ubicacion de capipepo
+}
+
+function enviarPosicion(x, y) { //peticion de enviar una posicion
+    fetch(`http://localhost:8080/mokepon/${jugadorId}/posicion`, {
+        method: "post",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            x, //x: x 
+            y
+        })
+    })
+        .then(function (res) {//recibir una respuesa (recibo primero una fincion que recibe una respuesta antes de ser procesada)
+            if (res.ok) { //verificamos que tdo haya salido bien en la peticion y podemos comenzar a leer sus datos
+                res.json() //como los datos vienen en json voy a comenzar a usar res.json. esto es una promesa entoncs debo usar tambein .then
+                    .then(function ({ enemigos }) { // enemigos es la misma variable que enviams en el index.
+                        console.log(enemigos)
+                    })
+            }
+        })
 }
 
 function moverDer() {
