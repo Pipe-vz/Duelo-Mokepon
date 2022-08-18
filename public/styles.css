@@ -146,6 +146,7 @@ input:checked+label {
     color: white;
     font-family: 'Poppins', sans-serif;
     margin: 10px 0;
+    user-select: none; /*permte que en dispositivos tactiles no se seleccione un texto al tocar por ejemplo el boton en este caso*/
 }
 
 @media (max-width: 560px) {

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MOKEPON</title>
+  <link rel="stylesheet" href="./styles.css">
+  <!--se crea el link al codigo de css creado-->
+</head>
+
+<body>
+
+  <section id="selecciona-mascota">
+    <h1 id="titulito" class="titulo">Mokepon</h1>
+
+    <h2 class="subtitulo">elige a tu mascota:</h2>
+
+    <div id="contenedorTarjetas" class="tarjetas">
+
+    </div>
+
+    <button id="boton-mascota">seleccionar</button>
+
+  </section>
+
+  <section id="verMapa">
+
+    <h2 class="subtitulo">Recorre el mapa con tu Mokepon!</h2>
+    <canvas id="mapa"></canvas>
+    <!--creo un boton con una funcion integrada al hacer click, corre en el JS-->
+    <button ontouchend="detenerMovimiento" onmouseup="detenerMovimiento()" onmousedown="moverArr()"
+      ontouchstart="moverArr()">Arriba</button>
+    <div>
+      <button ontouchend="detenerMovimiento()" onmouseup="detenerMovimiento()" onmousedown="moverIzq()"
+        ontouchstart="moverIzq()">Izquierda</button>
+      <button ontouchend="detenerMovimiento()" onmouseup="detenerMovimiento()" onmousedown="moverAba()"
+        ontouchstart="moverAba()">Abajo</button>
+      <button ontouchend="detenerMovimiento()" onmouseup="detenerMovimiento()" onmousedown="moverDer()"
+        ontouchstart="moverDer()">Derecha</button>
+    </div>
+
+  </section>
+
+
+  <section id="seleccionar-ataque">
+    <h1 id="titulito" class="titulo">Mokepon</h1>
+
+    <h2 class="subtitulo">elige tu ataque:</h2>
+
+    <div id="contenedorAtaques" class="tarjetasAtaques"></div>
+
+    <div id="mensajes">
+      <p id="resultado">Mucha Suerte!</p>
+      <section id="reiniciar">
+        <button id="boton-reiniciar">Reiniciar</button>
+      </section>
+    </div>
+
+    <div class="ataques">
+      <div class="ataquesJugador">
+        <p id="vidas-jugador">0</p>
+        <p id="mascota-jugador"></p>
+        <div id="ataquesDelJugador"></div>
+      </div>
+      <div class="ataquesEnemigo">
+        <p id="vidas-enemigo">0</p>
+        <p id="mascota-enemigo"></p>
+        <div id="ataquesDelEnemigo"></div>
+      </div>
+      </p>
+    </div>
+  </section>
+  <script src="./mokepon.js"></script>
+  <!--se crea el link al codigo de js creado-->
+</body>
+
+</html>

@@ -21,7 +21,9 @@ const aleatorio = (min, max) => Math.floor(Math.random() * (max - min + 1) + min
 const sectionVerMapa = document.getElementById("verMapa")
 const mapa = document.getElementById('mapa')
 
+
 let jugadorId = null
+let enemigoId = null
 let mokepones = []
 let mokeponesEnemigos = []
 let ataqueJugador = []
@@ -156,7 +158,7 @@ function iniciarJuego() {
 }
 
 function unirseAlJuego() {
-  fetch('http://localhost:8080/unirse') //llamada tipo get donde obtenemos una respuesta, peticion tipo get.
+  fetch('http://192.168.1.9:8080/unirse') //llamada tipo get donde obtenemos una respuesta, peticion tipo get.
     .then(function (res) { //callback qu se ejecutara uan vez se reciba respuesta del servior
       // console.log(res)
       if (res.ok) { //preguntaremos si todo salio bien
@@ -176,7 +178,6 @@ function unirseAlJuego() {
 
 function seleccionarMascotaJugador() {
   //muestro la seccion ataque una vez presiono el boton seleccionar y a su vez oculto la seccion de mostrar mokepones
-  seccionMascota.style.display = 'none'
 
   sectionVerMapa.style.display = 'flex'
 
@@ -190,8 +191,12 @@ function seleccionarMascotaJugador() {
     spanMascotaJugador.innerHTML = inputRatigueya.id
     mascotaJugador = inputRatigueya.id
   } else {
-    console.log(`No has seleccionado nada!`)
+    alert(`No has seleccionado al jugador!`)
+    return // sirve para frenar la ejecucion del codigo, no va a correr lo que aparece debajo
   }
+
+  seccionMascota.style.display = 'none'
+  
   seleccionarMokepon(mascotaJugador)
   extraerAtaques(mascotaJugador) //agreo los ataques una vez seleccione Mokepon
   iniciarMapa()
@@ -199,7 +204,7 @@ function seleccionarMascotaJugador() {
 }
 
 function seleccionarMokepon(mascotaJugador) { // peticion tipo post
-  fetch(`http://localhost:8080/mokepon/${jugadorId}`, {
+  fetch(`http://192.168.1.9:8080/mokepon/${jugadorId}`, {
     method: "post",
     headers: {
       "Content-Type": "application/json"
@@ -259,10 +264,40 @@ function secuenciaAtaque() {
         boton.style.background = '#112f58'
         boton.disabled = true
       }
-      ataqueAleatorio()
+      if (ataqueJugador.length === 5) {
+        enviarAtaques()
+      }
     })
 
   })
+}
+
+function enviarAtaques() {
+  fetch(`http://192.168.1.9:8080/mokepon/${jugadorId}/ataques`, {
+    method: "post",
+    headers: {
+      "content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      ataques: ataqueJugador
+    })
+  })
+  intervalo = setInterval(obtenerAtaques, 50)
+}
+
+function obtenerAtaques() {
+  fetch(`http://192.168.1.9:8080/mokepon/${enemigoId}/ataques`)
+    .then(function (res) {
+      if (res.ok) {
+        res.json()
+          .then(function ({ ataques }) {
+            if (ataques.length === 5) {
+              ataqueEnemigo = ataques
+              combate()
+            }
+          })
+      }
+    })
 }
 
 function seleccionarMascotaEnemigo(enemigo) {
@@ -304,6 +339,7 @@ function indexAmbosOponentes(jugador, enemigo) {
 
 function combate() {
 
+  clearInterval(intervalo)
   for (let index = 0; index < ataqueJugador.length; index++) {
     if (ataqueJugador[index] === ataqueEnemigo[index]) {
       indexAmbosOponentes(index, index)
@@ -385,6 +421,7 @@ function pintarCanvas() {
   enviarPosicion(mascotaSeleccionada.x, mascotaSeleccionada.y)
   mokeponesEnemigos.forEach(function (mokepon) {
     mokepon.pintarMokepon()
+    revisarColision(mokepon)
   })
   //lienzo.fillrect(5,15,20,40) // pruebo que pueda dibijar en el canvas credo un rectangulo.
   //et imagenCapipepo = new Image() // por medio de la clase Image creamos una mueva imgen
@@ -392,7 +429,7 @@ function pintarCanvas() {
 }
 
 function enviarPosicion(x, y) { //peticion de enviar una posicion
-  fetch(`http://localhost:8080/mokepon/${jugadorId}/posicion`, {
+  fetch(`http://192.168.1.9:8080/mokepon/${jugadorId}/posicion`, {
     method: "post",
     headers: {
       "Content-Type": "application/json"
@@ -411,11 +448,11 @@ function enviarPosicion(x, y) { //peticion de enviar una posicion
               let mokeponEnemigo = null
               const mokeponNombre = enemigo.mokepon.nombre || ""
               if (mokeponNombre === 'Hipodoge') {
-                mokeponEnemigo = new Mokepon('Hipodoge', './assets/mokepons_mokepon_hipodoge_attack.png', 5, './assets/hipodoge.png')
+                mokeponEnemigo = new Mokepon('Hipodoge', './assets/mokepons_mokepon_hipodoge_attack.png', 5, './assets/hipodoge.png', enemigo.id)
               } else if (mokeponNombre === 'Capipepo') {
-                mokeponEnemigo = new Mokepon('Capipepo', './assets/mokepons_mokepon_capipepo_attack.png', 5, './assets/capipepo.png')
+                mokeponEnemigo = new Mokepon('Capipepo', './assets/mokepons_mokepon_capipepo_attack.png', 5, './assets/capipepo.png', enemigo.id)
               } else if (mokeponNombre === 'Ratigueya') {
-                mokeponEnemigo = new Mokepon('Ratigueya', './assets/mokepons_mokepon_ratigueya_attack.png', 5, './assets/ratigueya.png')
+                mokeponEnemigo = new Mokepon('Ratigueya', './assets/mokepons_mokepon_ratigueya_attack.png', 5, './assets/ratigueya.png', enemigo.id)
               }
               //pintarMokeponEnemigo(mokeponNombre)
               mokeponEnemigo.x = enemigo.x
@@ -492,10 +529,10 @@ function pintarMokeponEnemigo(mokepon) {
 }
 
 function revisarColision(enemigo) {
-  const arribaEnemigo = enemigo.yEnemigo
-  const abajoEnemigo = enemigo.yEnemigo + enemigo.alto
-  const derechaEnemigo = enemigo.xEnemigo + enemigo.ancho
-  const izquierdaEnemigo = enemigo.xEnemigo
+  const arribaEnemigo = enemigo.y
+  const abajoEnemigo = enemigo.y + enemigo.alto
+  const derechaEnemigo = enemigo.x + enemigo.ancho
+  const izquierdaEnemigo = enemigo.x
 
   const arribaMascota = mascotaSeleccionada.y
   const abajoMascota = mascotaSeleccionada.y + mascotaSeleccionada.alto
@@ -511,10 +548,11 @@ function revisarColision(enemigo) {
     return
   } else {
     detenerMovimiento()
-    seleccionarMascotaEnemigo(enemigo) //corro la funcion aleatoria para seleccionar segundo Mokepon. 
+    clearInterval(intervalo)
+    enemigoId = enemigo.id
     seccionAtaque.style.display = 'flex'  // seccionAtaque.hidden = false
     sectionVerMapa.style.display = 'none'
-    clearInterval(intervalo)
+    seleccionarMascotaEnemigo(enemigo) //corro la funcion aleatoria para seleccionar segundo Mokepon. 
 
     console.log('colision')
   }
